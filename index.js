@@ -20,7 +20,7 @@ app.set("trust proxy", 1)
 
 //middleware
 app.use("*", cors({
-    origin: "http://localhost:5173",
+    origin: "https://waneem-admin.onrender.com",
     credentials: true,
     optionSuccessStatus: 200,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
