@@ -14,16 +14,15 @@ dotenv.config()
 export const app = express();
 app.use(cookieParser())
 
-const corsoptions = {
+
+//middleware
+app.use(cors({
     origin: "https://waneem-admin-86fa.vercel.app",
     credentials: true,
     optionSuccessStatus: true,
     methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
-}
-
-//middleware
-app.use(cors(corsoptions))
-
+}))
+app.set("trust proxy", 1)
 app.use(express.json())
 //router
 app.use('/api/v1/auth', authRouter)
