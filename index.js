@@ -33,6 +33,7 @@ app.use('/api/v1/booking', bookingrouter)
 
 
 app.use('/api/v1/user', userRouter)
+
 app.get(
     '/api/v1', (req, res) => {
         console.log('here')
@@ -48,3 +49,7 @@ console.log(process.env.ADMIN_URL, process.env.CLIENT_URL)
 
 app.use(ErrorHandler)
 
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', req.headers("https://waneem-admin-86fa.vercel.app", "https://waneem-hotelbooking-fsl3za4oh-wakai-megumi.vercel.app", "https://waneem-hotelbooking.vercel.app", "https://waneem-admin-86fa-8xdesxash-wakai-megumi.vercel.app"));
+    next();
+});
