@@ -7,6 +7,7 @@ export const Sendtoken = async (user, res, statusCode = 200, message, next) => {
     try {
         const token = await jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET, { expiresIn: "180d" })
 
+        if (!token) return res.status(400).json({ success: false, message: "token not generated" })
         return res.status(statusCode).cookie("access_token", token, {
             httpOnly: true,
             maxAge: 180 * 24 * 60 * 60 * 1000,
