@@ -20,7 +20,7 @@ app.set("trust proxy", 1)
 
 //middleware
 app.use("*", cors({
-    origin: "https://waneem-admin.onrender.com",
+    origin: "http://localhost:5173",
     credentials: true,
     optionSuccessStatus: 200,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
@@ -37,23 +37,9 @@ app.use('/api/v1/booking', bookingrouter)
 
 app.use('/api/v1/user', userRouter)
 
-const toke = "Sdfsdfsd"
-app.get(
-    '/api/v1', (req, res) => {
-        console.log(toke)
-        console.log('here')
-        res.status(200).cookie("access_token", toke, {
-            httpOnly: true,
-            maxAge: 24 * 60 * 60 * 1000,
-            sameSite: "none",
-            secure: true
-        }).send('hello from express')
-        console.log(res)
-    }
 
 
-)
-console.log(process.env.ADMIN_URL, process.env.CLIENT_URL)
+
 
 
 //error middleware

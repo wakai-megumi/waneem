@@ -6,32 +6,49 @@ import CreateError from "../utils/CreateError.js"
 
 //update user
 export const updateUser = async (req, res) => {
-    const { id } = req.params
-    const { email, password, ...other } = req.body
-    console.log(id)
+    const { id, ...otherFields } = req.body;
+
     try {
-        const user = await User.findByIdAndUpdate(id, req.body, { new: true })
-        console.log(user)
-        if (!user) {
+        const existingUser = await User.findOne({ id });
+
+        if (!existingUser) {
             return res.status(404).json({
                 success: false,
-                message: "User not found"
-            })
+                message: "User not found",
+            });
         }
+
+        Object.entries(otherFields).forEach(([field, value]) => {
+            if (existingUser[field] !== value) {
+                existingUser[field] = value;
+            }
+        });
+
+
+        const updatedUser = await existingUser.save();
+
         return res.status(200).json({
             success: true,
             message: "User updated successfully",
-            user
+            user: updatedUser,
+        });
+    } catch (error) {
+        if (error.code === 11000 && error.keyPattern.email === 1) {
+            return res.status(409).json({
+                success: false,
+                message: "Email already exists",
+            });
+        }
 
-        })
-
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred while updating the user",
+            error,
+        });
     }
+};
 
-    catch (error) {
-        return res.status(409).json({ error })
-    }
 
-}
 //delete hotel
 export const deleteUser = async (req, res) => {
 
