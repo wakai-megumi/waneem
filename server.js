@@ -1,10 +1,16 @@
-import { app } from './index.js'
-import connectDB from './database.js'
+import { app } from './index.js';
+import connectDB from './database.js';
+import express from 'express';
+import path from 'path';
 
+app.use(express.static(path.join(__dirname, 'build')));
 
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
-app.listen(process.env.SERVER_PORT, () => {
-    connectDB()
-
-    console.log("listening on port 3000")
-})
+const PORT = process.env.SERVER_PORT || 3000;
+app.listen(PORT, () => {
+    connectDB();
+    console.log(`Server listening on port ${PORT}`);
+});
