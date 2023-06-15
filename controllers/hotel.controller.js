@@ -45,12 +45,11 @@ export const createHotel = async (req, res, next) => {
 //update hotel
 export const updateHotel = async (req, res) => {
     try {
-        const { _id, photos, ...updatedFields } = req.body;
+        const { _id, photos, rooms, ...updatedFields } = req.body;
 
         const existingHotel = await Hotel.findById(_id);
 
         updatedFields.photos = existingHotel.photos;
-
         const updatedHotel = await Hotel.findByIdAndUpdate(_id, { $set: updatedFields }, { new: true });
 
         res.status(200).json({

@@ -20,7 +20,7 @@ app.use(cors({
     origin: "https://waneem-admin.onrender.com",
     credentials: true,
     optionSuccessStatus: true,
-    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+    methods: "*"
 }))
 app.set("trust proxy", 1)
 app.use(express.json())
@@ -33,10 +33,18 @@ app.use('/api/v1/booking', bookingrouter)
 
 app.use('/api/v1/user', userRouter)
 
+const toke = "Sdfsdfsd"
 app.get(
     '/api/v1', (req, res) => {
+        console.log(toke)
         console.log('here')
-        res.send('hello from express')
+        res.status(200).cookie("access_token", toke, {
+            httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000,
+            sameSite: "none",
+            secure: true
+        }).send('hello from express')
+        console.log(res)
     }
 
 
