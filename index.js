@@ -22,10 +22,11 @@ app.set("trust proxy", 1)
 app.use("*", cors({
     origin: "https://waneem-admin.onrender.com",
     credentials: true,
-    optionSuccessStatus: true,
-    methods: "*",
+    optionSuccessStatus: 200,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ['Content-Type', 'Authorization']
-}))
+}));
+
 
 //router
 app.use('/api/v1/auth', authRouter)
