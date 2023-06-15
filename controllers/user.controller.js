@@ -7,9 +7,10 @@ import CreateError from "../utils/CreateError.js"
 //update user
 export const updateUser = async (req, res) => {
     const { id, ...otherFields } = req.body;
+    console.log(id)
 
     try {
-        const existingUser = await User.findOne({ id });
+        const existingUser = await User.findById({ id });
 
         if (!existingUser) {
             return res.status(404).json({

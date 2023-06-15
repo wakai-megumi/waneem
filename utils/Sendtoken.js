@@ -17,7 +17,6 @@ export const Sendtoken = async (user, res, statusCode = 200, message, next) => {
             success: true,
             message: message || 'login successfull',
             user: user,
-            token
 
         })
     } catch (err) {
