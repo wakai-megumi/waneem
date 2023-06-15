@@ -10,7 +10,7 @@ export const Sendtoken = async (user, res, statusCode = 200, message, next) => {
         return res.status(statusCode).cookie("access_token", token, {
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000,
-            sameSite: "none",
+            sameSite: "None",
             secure: true
         }).json({
             success: true,
