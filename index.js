@@ -12,12 +12,14 @@ import ErrorHandler from './utils/ErrorHandler.js'
 dotenv.config()
 
 export const app = express();
+app.use(express.json())
+
 app.use(cookieParser())
 app.set("trust proxy", 1)
 
 
 //middleware
-app.use(cors({
+app.use("*", cors({
     origin: "https://waneem-admin.onrender.com",
     credentials: true,
     optionSuccessStatus: true,
@@ -25,7 +27,6 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }))
 
-app.use(express.json())
 //router
 app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/hotels', hotelRouter)
