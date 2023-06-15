@@ -13,6 +13,7 @@ dotenv.config()
 
 export const app = express();
 app.use(cookieParser())
+app.set("trust proxy", 1)
 
 
 //middleware
@@ -23,7 +24,6 @@ app.use(cors({
     methods: "*",
     allowedHeaders: ['Content-Type', 'Authorization']
 }))
-app.set("trust proxy", 1)
 
 app.use(express.json())
 //router
