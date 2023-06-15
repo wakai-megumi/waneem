@@ -14,7 +14,7 @@ dotenv.config()
 export const app = express();
 
 const corsoptions = {
-    origin: [process.env.CLIENT_URL, process.env.ADMIN_URL, "https://waneem-admin-86fa.vercel.app", "https://waneem-hotelbooking-oqax8aslf-wakai-megumi.vercel.app"],
+    origin: ["https://waneem-admin-86fa.vercel.app", "https://waneem-hotelbooking-fsl3za4oh-wakai-megumi.vercel.app", "https://waneem-hotelbooking.vercel.app", "https://waneem-admin-86fa-8xdesxash-wakai-megumi.vercel.app"],
     credentials: true,
     optionSuccessStatus: true,
     methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
