@@ -17,7 +17,7 @@ app.use(cookieParser())
 
 //middleware
 app.use(cors({
-    origin: "https://waneem-admin-86fa.vercel.app",
+    origin: "https://waneem-admin.onrender.com",
     credentials: true,
     optionSuccessStatus: true,
     methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
