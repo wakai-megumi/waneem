@@ -2,6 +2,8 @@ import { app } from './index.js';
 import connectDB from './database.js';
 import express from 'express';
 import path from 'path';
+import { __dirname } from './esm.js';
+
 
 app.use(express.static(path.join(__dirname, 'dist')));
 
