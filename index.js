@@ -17,7 +17,7 @@ app.use(cookieParser())
 
 //middleware
 app.use(cors({
-    origin: ["https://waneem-admin.onrender.com", "waneem-hotelbooking.vercel.app"],
+    origin: ["https://waneem-admin.onrender.com", "https://waneem-hotelbooking.vercel.app"],
     credentials: true,
     optionSuccessStatus: true,
     methods: "*"
