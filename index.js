@@ -14,7 +14,7 @@ dotenv.config()
 export const app = express();
 
 const corsoptions = {
-    origin: [process.env.CLIENT_URL, process.env.ADMIN_URL],
+    origin: [process.env.CLIENT_URL, process.env.ADMIN_URL, "https://waneem-admin-86fa.vercel.app", "https://waneem-admin-86fa-ma0ozjmb3-wakai-megumi.vercel.app"],
     credentials: true,
     optionSuccessStatus: true,
     methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
@@ -41,7 +41,7 @@ app.get(
 
 
 )
-
+console.log(process.env.ADMIN_URL, process.env.CLIENT_URL)
 
 
 //error middleware
