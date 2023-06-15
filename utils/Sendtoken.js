@@ -13,7 +13,6 @@ export const Sendtoken = async (user, res, statusCode = 200, message, next) => {
             maxAge: 180 * 24 * 60 * 60 * 1000,
             sameSite: "none",
             secure: true,
-            domain: 'waneem-admin.onrender.com'
         }).json({
             success: true,
             message: message || 'login successfull',
