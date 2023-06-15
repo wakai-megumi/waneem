@@ -12,9 +12,10 @@ import ErrorHandler from './utils/ErrorHandler.js'
 dotenv.config()
 
 export const app = express();
+app.use(cookieParser())
 
 const corsoptions = {
-    origin: ["https://waneem-admin-86fa.vercel.app", "https://waneem-hotelbooking-fsl3za4oh-wakai-megumi.vercel.app", "https://waneem-hotelbooking.vercel.app", "https://waneem-admin-86fa-8xdesxash-wakai-megumi.vercel.app"],
+    origin: "https://waneem-admin-86fa.vercel.app",
     credentials: true,
     optionSuccessStatus: true,
     methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
@@ -22,7 +23,6 @@ const corsoptions = {
 
 //middleware
 app.use(cors(corsoptions))
-app.use(cookieParser())
 
 app.use(express.json())
 //router
