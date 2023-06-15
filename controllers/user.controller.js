@@ -10,7 +10,7 @@ export const updateUser = async (req, res) => {
     console.log(id)
 
     try {
-        const existingUser = await User.findById({ id });
+        const existingUser = await User.findById(id);
 
         if (!existingUser) {
             return res.status(404).json({
