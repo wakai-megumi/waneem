@@ -11,16 +11,15 @@ export const getuserbookings = async (req, res) => {
         const { useremail } = req.body
 
         const bookings = await Booking.find({ user: useremail })
-
+        console.log(bookings, "bookings")
         if (!bookings || bookings.length === 0) {
-            return res.status(409).json({ message: "No bookings found" })
+            return res.status(404).json({ success: false, message: "You dont have any bookings yet " })
         }
 
         const responseData = []
 
         for (const booking of bookings) {
             const hotel = await Hotel.findById(booking.hotelid)
-
             const {
                 _id,
                 hotelid,
@@ -29,28 +28,33 @@ export const getuserbookings = async (req, res) => {
                 guests,
                 additionalDetails,
                 status,
+                ReservationAmount,
+                TotalPrice
+
             } = booking
 
             const { _id: id, name, address, price, hotelLogo } = hotel
             const roomIds = hotel.rooms
-
             const roomN = []
 
             for (const roomId of roomIds) {
                 const reqRoom = await Room.findById(roomId)
-                const roomNumbersForRoom = reqRoom.roomNumbers
+                if (reqRoom) {
+                    const roomNumbersForRoom = reqRoom?.roomNumbers
 
-                for (const item of roomNumbersForRoom) {
-                    if (additionalDetails.includes(item._id.toString())) {
-                        const roomData = {
-                            type: reqRoom.title,
-                            number: item.number,
-                            roomid: roomId
+                    for (const item of roomNumbersForRoom) {
+                        if (additionalDetails.includes(item._id.toString())) {
+                            const roomData = {
+                                type: reqRoom.title,
+                                number: item.number,
+                                roomid: roomId
+                            }
+                            roomN.push(roomData)
+
                         }
-                        roomN.push(roomData)
-
                     }
                 }
+
             }
 
             const bookingData = {
@@ -61,6 +65,8 @@ export const getuserbookings = async (req, res) => {
                 guests,
                 additionalDetails,
                 status,
+                ReservationAmount,
+                TotalPrice,
                 hotel: {
                     _id: id,
                     name,
@@ -114,7 +120,7 @@ export const deleteBooking = async (req, res) => {
         }
 
 
-        res.status(200).json({ message: "Booking deleted successfully" })
+        res.status(200).json({ success: true, message: "Booking deleted successfully" })
     } catch (error) {
         console.log(error)
         res.status(409).json({ message: error.message })
@@ -132,6 +138,27 @@ export const getAllBookings = async (req, res) => {
             success: true,
             length: bookings.length,
             bookings
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(409).json({ message: error.message })
+    }
+}
+export const confirm_reservation = async (req, res) => {
+    try {
+        const { payment_intent } = req.body;
+        if (!payment_intent) {
+            return res.status(409).json({ message: "No payment intent found" })
+        }
+        const bookings = await Booking.findOneAndUpdate({ paymentIntent: payment_intent }, { $set: { status: "Approved" } }, { new: true })
+
+
+
+        res.status(200).json({
+            success: true,
+            message: "Booking confirmed successfully",
+
         })
 
     } catch (error) {
@@ -204,7 +231,8 @@ export const create_payment_intent = async (req, res, next) => {
             additionalDetails: req.body.additionalDetails,
             paymentIntent: paymentIntent.id,
             ReservationAmount: reservationAmount,
-            hotelname: hotelname
+            hotelname: hotelname,
+            TotalPrice: paymentAmount
 
         })
         const newbooking = await booking.save()

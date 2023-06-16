@@ -16,6 +16,7 @@ const bookingSchema = new Schema({
     status: { type: String, enum: ['Pending', 'Approved', 'Cancelled'], default: 'Pending' },
     paymentIntent: { type: String, required: true },
     ReservationAmount: { type: Number, required: true },
+    TotalPrice: { type: Number, required: true },
 });
 
 const Booking = mongoose.model('Booking', bookingSchema);
