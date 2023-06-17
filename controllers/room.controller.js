@@ -1,9 +1,11 @@
 import Hotel from "../models/hotel.model.js";
+import CreateError from "../utils/CreateError.js"
 import Room from "../models/room.model.js";
 export const createRoom = async (req, res) => {
-    const hotelId = req.params.hotelid;
     const room = new Room({
         title: req.body.title,
+        hotelId: req.body.hotelId,
+
         desc: req.body.desc,
         price: req.body.price,
         maxpeople: req.body.maxpeople,
@@ -13,7 +15,7 @@ export const createRoom = async (req, res) => {
     try {
         const roomSaved = await room.save();
         const hotel = await Hotel.findByIdAndUpdate(
-            hotelId,
+            req.body.hotelId,
             { $push: { rooms: roomSaved._id } },
             { new: true }
         );
@@ -46,26 +48,27 @@ export const updateRoom = async (req, res) => {
 }
 //delete hotel
 export const deleteRoom = async (req, res) => {
-
-
-
-    const { id } = req.params
+    const { id } = req.params; // Room id
     try {
-        const deletedRoom = await Room.findByIdAndDelete(id)
-        if (!deletedRoom) return res.status(404).json('room not found')
+        const deletedRoom = await Room.findByIdAndDelete(id);
+        if (!deletedRoom) return CreateError(409, "Error occurred while processing your request");
 
+        const hotel = await Hotel.findById(deletedRoom.hotelId);
+        const updatedRoomArray = hotel.rooms.filter(room => room.toString() !== id);
+        hotel.rooms = updatedRoomArray;
+        const updatedHotel = await hotel.save();
 
-        res.status(200).json({
-            message: "room deleted successfully",
+        if (!updatedHotel) return CreateError(403, "Please contact the technical team as this deletion has caused database mismanagement");
+
+        return res.status(200).json({
+            message: "Room deleted successfully",
             success: true,
-        })
-
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(409).json({ message: error.message });
     }
-    catch (error) {
-        console.log(error)
-        res.status(409).json({ message: error.message })
-    }
-}
+};
 
 
 // get a specific hotel -- can be accessed  any anyone

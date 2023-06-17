@@ -130,7 +130,7 @@ export const getAllBookings = async (req, res) => {
     try {
         const bookings = await Booking.find({}).sort({ createdAt: -1 })
         if (!bookings || bookings.length === 0) {
-            return res.status(409).json({ message: "No bookings found" })
+            return res.status(200).json({ success: true, message: "No bookings found" })
         }
 
 

@@ -6,12 +6,12 @@ const router = express.Router()
 
 
 
-router.post('/:hotelid', verifyAdmin, createRoom)
 router.put('/update/:id', verifyAdmin, updateRoom)
 router.delete('/delete/:id/', verifyAdmin, deleteRoom)
 router.get('/get/:id', getRoom)
 router.get('/all/', getAllRoom)
 router.post('/updatedate/dates', updateroomavailability)
+router.post('/createRoom', verifyAdmin, createRoom)
 
 
 

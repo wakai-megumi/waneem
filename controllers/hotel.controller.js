@@ -15,6 +15,7 @@ export const createHotel = async (req, res, next) => {
                     price: room.price,
                     desc: room.desc,
                     maxpeople: room.maxpeople,
+                    hotelId: '',                                                           // temporary saving the hotelid as it is yet to be cretaed
                     roomNumbers: room.roomNumbers.map((roomNumber) => ({
                         number: roomNumber.number,
                         unavailableDates: [],
@@ -26,10 +27,18 @@ export const createHotel = async (req, res, next) => {
 
         const newHotel = new Hotel({
             ...hotelData,
-            rooms: newRooms.map((room) => room._id), // Associate newly created room IDs with the hotel
+            rooms: newRooms.map((room) => room._id),   // adding the newly created room ids to hotel 
         });
 
         const savedHotel = await newHotel.save();
+        // here in the rooms created above we will now add the hotel id 
+        await Promise.all(
+            newRooms.map(async (room) => {
+                room.hotelId = savedHotel._id;
+                await room.save();
+            })
+        );
+
         res.status(201).json({
             success: true,
             message: "Hotel created successfully",
@@ -45,11 +54,39 @@ export const createHotel = async (req, res, next) => {
 //update hotel
 export const updateHotel = async (req, res) => {
     try {
-        const { _id, photos, rooms, ...updatedFields } = req.body;
+        const { _id, photos, rooms, hotelLogo, ...updatedFields } = req.body;
 
         const existingHotel = await Hotel.findById(_id);
 
-        updatedFields.photos = existingHotel.photos;
+        // ading the logic for creatin new rooms if any required
+        if (rooms && rooms !== existingHotel.rooms) {
+            const newRooms = await Promise.all(
+                rooms.map(async (item) => {
+                    const room = await Room.findById(item.toString());
+                    const newRoom = new Room({
+                        title: room.title,
+                        price: room.price,
+                        desc: room.desc,
+                        maxpeople: room.maxpeople,
+                        hotelId: _id,                            //adding the id of the current hotel
+                        roomNumbers: room.roomNumbers.map((roomNumber) => ({
+                            number: roomNumber.number,
+                            unavailableDates: [],
+                        })),
+                    });
+                    return await newRoom.save();
+                })
+            );
+
+            existingHotel.rooms.push(...newRooms.map((room) => room._id));
+        }
+        // Combine the existing photos with the new photos
+        const mergedPhotos = [...existingHotel.photos, ...photos];
+        const logo = hotelLogo ? hotelLogo : existingHotel.hotelLogo
+        updatedFields.rooms = existingHotel.rooms
+        updatedFields.photos = mergedPhotos;
+        updatedFields.hotelLogo = logo
+
         const updatedHotel = await Hotel.findByIdAndUpdate(_id, { $set: updatedFields }, { new: true });
 
         res.status(200).json({
@@ -63,12 +100,15 @@ export const updateHotel = async (req, res) => {
     }
 };
 
+
 //delete hotel
 export const deleteHotel = async (req, res) => {
 
     const { id } = req.params
     try {
         const deletedHotel = await Hotel.findByIdAndDelete(id)
+        const { rooms } = deletedHotel
+        const roomdeleted = await Room.deleteMany({ _id: { $in: rooms } })
 
 
         res.status(200).json({

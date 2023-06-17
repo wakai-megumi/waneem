@@ -7,26 +7,44 @@ import CreateError from "../utils/CreateError.js"
 //update user
 export const updateUser = async (req, res) => {
     const { id, ...otherFields } = req.body;
-    console.log(id)
 
     try {
-        const existingUser = await User.findById(id);
 
-        if (!existingUser) {
+        if (!id) {
+            return res.status(400).json({
+                success: false,
+                message: "User ID is required",
+            });
+        }
+
+        if (Object.keys(otherFields).length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "No fields to update",
+            });
+        }
+
+        const allowedFields = ["username", "email", "country", "city", "address", "phone", "profileimage"];
+        const invalidFields = Object.keys(otherFields).filter((field) => !allowedFields.includes(field));
+        if (invalidFields.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: `Invalid fields: ${invalidFields.join(", ")}`,
+            });
+        }
+
+        if (otherFields.profileimage === "") {
+            delete otherFields.profileimage;
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(id, otherFields, { new: true });
+
+        if (!updatedUser) {
             return res.status(404).json({
                 success: false,
                 message: "User not found",
             });
         }
-
-        Object.entries(otherFields).forEach(([field, value]) => {
-            if (existingUser[field] !== value) {
-                existingUser[field] = value;
-            }
-        });
-
-
-        const updatedUser = await existingUser.save();
 
         return res.status(200).json({
             success: true,
@@ -48,6 +66,7 @@ export const updateUser = async (req, res) => {
         });
     }
 };
+
 
 
 //delete hotel
