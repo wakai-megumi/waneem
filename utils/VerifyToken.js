@@ -36,7 +36,7 @@ export const verifyAdmin = async (req, res, next) => {
 export const verifyUser = async (req, res, next) => {
     try {
         await VerifyToken(req, res, async () => {
-
+            console.log(req.user.id, req.params.id)
             if (req.user.id !== req.params.id && !req.user.isAdmin) {
                 return next(CreateError(403, "You are not authorized to access this resource"));
             }

@@ -1,4 +1,5 @@
 import Hotel from "../models/hotel.model.js"
+import Reviews from "../models/reviews.model.js";
 import Room from "../models/room.model.js"
 import CreateError from "../utils/CreateError.js"
 
@@ -148,11 +149,9 @@ export const getHotel = async (req, res, next) => {
 
     try {
         const data = { ...filter };
-        console.log(data);
 
         const hotels = await Hotel.find(data).limit(limit);
 
-        console.log(hotels);
 
         return res.status(200).json({
             success: true,
@@ -208,25 +207,25 @@ export const singleHotel = async (req, res, next) => {
 //countby city
 
 export const countByCity = async (req, res, next) => {
-    const cities = req.query.cities.split(',')
-    if (cities.length === 0) return next(CreateError(404, "no result matches the query in database"))
+    const cities = req.query.cities.split(',');
+    if (cities.length === 0) return next(CreateError(404, "No results match the query in the database."));
     try {
-        const list = await Promise.all(cities.map(async (city) => {
-            const count = await Hotel.countDocuments({ city: city })
-            return (
-                {
-                    [city]: count
-                }
-            )
-        }))
+        const regexCities = cities.map(city => new RegExp(city, 'i'));
+        const list = await Promise.all(regexCities.map(async (regexCity) => {
+            const count = await Hotel.countDocuments({ city: { $regex: regexCity } });
+            return {
+                [regexCity.source]: count
+            };
+        }));
         res.status(200).json({
             success: true,
             list
-        })
+        });
     } catch (err) {
-        next(err)
+        next(err);
     }
-}
+};
+
 
 //countbytype
 export const countByType = async (req, res, next) => {
@@ -272,10 +271,53 @@ export const getroominfo = async (req, res, next) => {
             roomslist
         }
         )
-        // ... do something with the roomslist
 
     } catch (err) {
         console.log(err);
         next(err);
     }
 };
+//reviews section 
+export const addReview = async (req, res, next) => {
+    const { rating, review, user, username, userimage, updatedAt, createdAt, hotelid, title } = req.body;
+    try {
+
+        const Review = new Reviews({
+            rating,
+            review,
+            user,
+            username,
+            userimage,
+            updatedAt,
+            createdAt,
+            hotelid,
+            title
+        });
+        await Review.save();
+        return res.status(201).json({
+            success: true,
+            message: "Review added successfully",
+            review
+        });
+    } catch (err) {
+        console.log(err);
+        next(err);
+    }
+}
+
+export const getReviews = async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        console.log(id)
+        const reviews = await Reviews.find({ hotelid: id });
+        console.log(reviews)
+        return res.status(200).json({
+            success: true,
+            results: reviews.length,
+            reviews
+        });
+    } catch (err) {
+        console.log(err);
+        next(err);
+    }
+}
