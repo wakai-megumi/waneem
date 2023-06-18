@@ -231,7 +231,7 @@ export const create_payment_intent = async (req, res, next) => {
             additionalDetails: req.body.additionalDetails,
             paymentIntent: paymentIntent.id,
             ReservationAmount: reservationAmount,
-            hotelname: hotelname,
+            hotelName: hotelname,
             TotalPrice: paymentAmount
 
         })
