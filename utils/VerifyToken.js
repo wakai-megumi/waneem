@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 export const VerifyToken = async (req, res, next) => {
     try {
         const token = req.cookies.access_token;
-
         if (!token)
             return next(CreateError(401, "Not authenticated to access this resource, please login"));
 
@@ -35,8 +34,10 @@ export const verifyAdmin = async (req, res, next) => {
 
 export const verifyUser = async (req, res, next) => {
     try {
+
         await VerifyToken(req, res, async () => {
             console.log(req.user.id, req.params.id)
+
             if (req.user.id !== req.params.id && !req.user.isAdmin) {
                 return next(CreateError(403, "You are not authorized to access this resource"));
             }

@@ -17,7 +17,7 @@ router.get('/countbycity/', countByCity)
 router.get('/countbytype/', countByType)
 
 // review section
-router.post('/reviews/', verifyUser, addReview)
+router.post('/reviews/:id', verifyUser, addReview)
 router.get('/reviews/:id', getReviews)
 
 

@@ -11,8 +11,8 @@ export const Sendtoken = async (user, res, statusCode = 200, message, next) => {
         return res.status(statusCode).cookie("access_token", token, {
             httpOnly: true,
             maxAge: 180 * 24 * 60 * 60 * 1000,
-            sameSite: "lax",
-            secure: false,
+            sameSite: "none",
+            secure: true,
         }).json({
             success: true,
             message: message || 'login successfull',
