@@ -4,7 +4,7 @@ import { verifyAdmin, verifyUser } from '../utils/VerifyToken.js'
 
 const router = express.Router()
 
-router.get('/all-bookings', verifyAdmin, getAllBookings)
+router.get('/all-bookings', getAllBookings)
 // router.get('/booking/:id', getBooking)
 // router.put('/booking/:id', updateBooking)
 router.delete('/delete/:id', verifyUser, deleteBooking)
