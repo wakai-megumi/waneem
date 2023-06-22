@@ -9,6 +9,7 @@ export const updateUser = async (req, res) => {
     const { id, ...otherFields } = req.body;
 
     try {
+        console.log(otherFields)
 
         if (!id) {
             return res.status(400).json({

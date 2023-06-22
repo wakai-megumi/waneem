@@ -42,7 +42,7 @@ export const register = async (req, res, next) => {
         await user.save();
 
         // Generate and send the token
-        Sendtoken(user, res, 200, "User registered successfully", next);
+        return Sendtoken(user, res, 200, "User registered successfully", next);
     } catch (err) {
         return next(err);
     }
@@ -61,15 +61,13 @@ export const login = async (req, res, next) => {
         //check whether  someone exist with this email
         const user = await User.findOne({ email: req.body.email })
 
-        if (!user) return next(CreateError(404, `user with email ${email} not exists`))
-
+        if (user === null || !user) return res.status(400).json({ success: false, message: "invalid credentials" })
         // //dehashing the password
         const ispasswordcorrect = await bcrypt.compare(req.body.password, user.password)
-        !ispasswordcorrect ? next(CreateError(400, `password is incorrect`)) : null
-
+        if (!ispasswordcorrect) return res.status(400).json({ success: false, message: "invalid credentials" })
         const { password, isAdmin, ...other } = user._doc
 
-        Sendtoken({ ...other, isAdmin }, res, 200, `welcome back , ${user.username}`, next)
+        return Sendtoken({ ...other, isAdmin }, res, 200, `welcome back , ${user.username}`, next)
 
     } catch (err) {
         return next(err)
