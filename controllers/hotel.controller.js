@@ -16,7 +16,6 @@ export const createHotel = async (req, res, next) => {
                     price: room.price,
                     desc: room.desc,
                     maxpeople: room.maxpeople,
-                    hotelId: '',                                                           // temporary saving the hotelid as it is yet to be cretaed
                     roomNumbers: room.roomNumbers.map((roomNumber) => ({
                         number: roomNumber.number,
                         unavailableDates: [],
